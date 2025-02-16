@@ -20,3 +20,13 @@ def main():
 
 if __name__ == '__main__':
     main()
+
+from bookshelf.models import Book
+
+book = Book(title="1984", author = "George Orwell", publication_year = 1949)
+book.save()
+
+book = Book.objects.get(title = "1984")
+print(book)
+
+
