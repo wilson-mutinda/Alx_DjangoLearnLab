@@ -1,4 +1,7 @@
+# Retrieve Book Instance
+
+```python
 from bookshelf.models import Book
 
-book = Book.objects.filter(title="1984").first()  # Retrieves the first matching book
+book = Book.objects.get(title="1984")  # Retrieves the book by title
 print(f"Title: {book.title}, Author: {book.author}, Year: {book.publication_year}")
