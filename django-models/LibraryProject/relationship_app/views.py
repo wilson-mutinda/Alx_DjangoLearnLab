@@ -11,10 +11,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 def is_admin(user):
-    try:
-        return user.userprofile.role == 'Admin'
-    except UserProfile.DoesNotExist:
-        return False
+    return user.is_authenticated and getattr(user, 'userprofile', None) and user.userprofile.role == 'Admin'
+
 
 def is_librarian(user):
     try:
@@ -28,9 +26,10 @@ def is_member(user):
     except UserProfile.DoesNotExist:
         return False
 
-@user_passes_test(is_admin)
+@login_required
+@user_passes_test(is_admin, login_url='/login')
 def admin_view(request):
-    return render(request, 'admin.html')
+    return render(request, 'relationship_app/admin.html')
 
 @user_passes_test(is_librarian)
 def librarian_view(request):
