@@ -6,8 +6,7 @@ from .models import Author, Book, Librarian, Library
 
 def list_all_books(request):
     books = Book.objects.all()
-    book_list = "\n".join([f"{book.title} by {book.author.name}" for book in books])
-    return HttpResponse(f"<pre>{book_list}</pre>")
+    return render(request, "list_books.html", {'books': books})
 
 
 class LibraryDetailView(DetailView):
