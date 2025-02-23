@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.views.generic.detail import DetailView
 from django.contrib.auth import login, logout, authenticate
@@ -6,9 +6,42 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Library
 from .models import Author, Book, Librarian, UserProfile
-from django.contrib.auth.decorators import login_required, user_passes_test
+from .forms import BookForm
+from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
 
+@login_required
+@permission_required('relationship_app.can_add_book', raise_exception=True)
+def add_book(request):
+    if request.method == "POST":
+        form = BookForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('list_books')  # Update with the actual book listing page
+    else:
+        form = BookForm()
+    return render(request, 'relationship_app/book_form.html', {'form': form})
 
+@login_required
+@permission_required('relationship_app.can_change_book', raise_exception=True)
+def edit_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == "POST":
+        form = BookForm(request.POST, instance=book)
+        if form.is_valid():
+            form.save()
+            return redirect('list_books')
+    else:
+        form = BookForm(instance=book)
+    return render(request, 'relationship_app/book_form.html', {'form': form})
+
+@login_required
+@permission_required('relationship_app.can_delete_book', raise_exception=True)
+def delete_book(request, book_id):
+    book = get_object_or_404(Book, id=book_id)
+    if request.method == "POST":
+        book.delete()
+        return redirect('list_books')
+    return render(request, 'relationship_app/book_confirm_delete.html', {'book': book})
 
 def is_admin(user):
     return user.is_authenticated and getattr(user, 'userprofile', None) and user.userprofile.role == 'Admin'
