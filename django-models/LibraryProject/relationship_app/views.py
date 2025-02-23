@@ -7,7 +7,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from .models import Library
 from .models import Author, Book, Librarian, UserProfile
 from .forms import BookForm
-from django.contrib.auth.decorators import login_required, permission_required, user_passes_test
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 
 @login_required
 @permission_required('relationship_app.can_add_book', raise_exception=True)
