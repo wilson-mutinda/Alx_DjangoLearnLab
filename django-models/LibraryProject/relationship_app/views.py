@@ -5,38 +5,40 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import AuthenticationForm
 from .models import Library
-from .models import Author, Book, Librarian
+from .models import Author, Book, Librarian, UserProfile
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 
 
-# Helper functions to check user roles
 def is_admin(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Admin'
+    try:
+        return user.userprofile.role == 'Admin'
+    except UserProfile.DoesNotExist:
+        return False
 
 def is_librarian(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Librarian'
+    try:
+        return user.userprofile.role == 'Librarian'
+    except UserProfile.DoesNotExist:
+        return False
 
 def is_member(user):
-    return user.is_authenticated and hasattr(user, 'userprofile') and user.userprofile.role == 'Member'
+    try:
+        return user.userprofile.role == 'Member'
+    except UserProfile.DoesNotExist:
+        return False
 
-# Admin view
-@login_required
 @user_passes_test(is_admin)
 def admin_view(request):
-    return render(request, 'relationship_app/admin_view.html')
+    return render(request, 'admin.html')
 
-# Librarian view
-@login_required
 @user_passes_test(is_librarian)
 def librarian_view(request):
-    return render(request, 'relationship_app/librarian_view.html')
+    return render(request, 'librarian.html')
 
-# Member view
-@login_required
 @user_passes_test(is_member)
 def member_view(request):
-    return render(request, 'relationship_app/member_view.html')
+    return render(request, 'member.html')
 
 def list_all_books(request):
     books = Book.objects.all()
