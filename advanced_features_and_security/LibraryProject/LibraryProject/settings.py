@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Enforce HTTPS by redirecting all HTTP requests to HTTPS
 SECURE_SSL_REDIRECT = True  
 
