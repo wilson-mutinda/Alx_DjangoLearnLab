@@ -11,6 +11,12 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required, user_passes_test
 
 @login_required
+@user_passes_test(lambda u: u.is_authenticated and hasattr(u, 'userprofile') and u.userprofile.role == 'Admin', login_url='/login/')
+def admin_view(request):
+    return render(request, 'relationship_app/admin.html')
+
+
+@login_required
 @permission_required('relationship_app.can_add_book', raise_exception=True)
 def add_book(request):
     if request.method == "POST":
