@@ -13,6 +13,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 import os
 
+# Enforce HTTPS by redirecting all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True  
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,14 +32,26 @@ DEBUG = False
 
 ALLOWED_HOSTS = []
 
-# Security Headers
-SECURE_BROWSER_XSS_FILTER = True
-X_FRAME_OPTIONS = 'DENY'
+# Prevent clickjacking
+X_FRAME_OPTIONS = "DENY"
+
+# Prevent browsers from MIME-sniffing
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+# Enable browser-based XSS filtering
+SECURE_BROWSER_XSS_FILTER = True
+
 
 # HTTPS SETTINGS
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SECURE = True
+
+
+# HTTP Strict Transport Security (HSTS)
+SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply HSTS to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow preloading for better security
+
 
 # Content Security Policy
 CSP_DEFAULT_SRC = ("'self'",)
@@ -56,7 +71,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bookshelf',
-    'csp',
+    # 'csp',
     # 'relationship_app',
 ]
 
