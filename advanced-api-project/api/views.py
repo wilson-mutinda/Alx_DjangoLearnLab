@@ -6,6 +6,7 @@ from .models import Book, Author
 from .serializers import BookSerializer, AuthorSerializer
 
 from rest_framework import generics, filters
+from rest_framework.filters import OrderingFilter, SearchFilter
 
 class BookListView(generics.ListAPIView):
     queryset = Book.objects.all()
