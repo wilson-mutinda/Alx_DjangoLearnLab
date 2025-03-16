@@ -18,7 +18,7 @@ class BookAPITestCase(APITestCase):
         self.assertEqual(len(response.data), 2)
 
     def test_create_book_authenticated(self):
-        self.client.force_authenticate(user=self.user)
+        self.client.force_login(user=self.user)
         data = {'title': 'New Book', 'publication_year': 2024, 'author': self.author.id}
         response = self.client.post('/api/books/', data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
