@@ -1,9 +1,10 @@
 from django import forms
 from .models import Post, Comment
-from taggit.forms import TagField
+from taggit.forms import TagField, TagWidget
 
 class PostForm(forms.ModelForm):
-    tags = TagField(required=False)
+    tags = TagField(required=False, widget=TagWidget())  # Use TagWidget explicitly
+
     class Meta:
         model = Post
         fields = ['title', 'content', 'tags']
