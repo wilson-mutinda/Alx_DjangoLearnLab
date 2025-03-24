@@ -9,23 +9,21 @@ from rest_framework_simplejwt.tokens import RefreshToken
 
 from django.contrib.auth import authenticate
 
-# User creation
-@api_view(['POST', 'GET'])
+@api_view(['POST'])
 @permission_classes([AllowAny])
+def register_user_view(request):
+    serializer = CustomUserSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        token = Token.objects.get(user=user)  # ✅ Retrieve token for response
 
-def list_create_user_view(request):
-    if request.method == 'POST':
-        serializer = CustomUserSerializer(data = request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return response.Response({'message': 'User created successfully!'}, status=status.HTTP_201_CREATED)
-        return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-    elif request.method == 'GET':
-        users = CustomUser.objects.all()
-        serializer = CustomUserSerializer(users, many = True)
-        return response.Response(serializer.data, status=status.HTTP_200_OK)
-    return response.Response({'error': 'Unauthorized!'}, status=status.HTTP_401_UNAUTHORIZED)
+        return response.Response({
+            'message': 'User created successfully!',
+            'token': token.key  # ✅ Return token in response
+        }, status=status.HTTP_201_CREATED)
+
+    return response.Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 @api_view(['POST'])
 @permission_classes([AllowAny])
