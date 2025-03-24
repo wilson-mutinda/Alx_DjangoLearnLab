@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework import response, status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.authtoken.models import Token
 
 from django.contrib.auth import authenticate
 
